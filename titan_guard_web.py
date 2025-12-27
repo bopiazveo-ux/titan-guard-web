@@ -75,8 +75,14 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary"):
                     path = files[0]
 
                     # Xử lý video (logic đơn giản nhưng đầy đủ)
-                    try:
+                                        try:
                         clip = VideoFileClip(path)
+                        has_video = True
+                    except Exception as e:
+                        st.warning("Video stream lỗi → dùng audio-only với nền đen")
+                        audio_clip = AudioFileClip(path)
+                        clip = ColorClip((1080,1920), color=(0,0,0)).set_duration(audio_clip.duration).set_audio(audio_clip)
+                        has_video = False
                     except:
                         audio_clip = AudioFileClip(path)
                         clip = ColorClip((1080,1920), color=(0,0,0)).set_duration(audio_clip.duration).set_audio(audio_clip)
@@ -146,4 +152,5 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary"):
                 st.info("Thử lại với URL TikTok khác hoặc kiểm tra kết nối mạng.")
 
 st.markdown("---")
+
 st.caption("TitanGuard Web PRO 2025 - Tool tạo video viral cho shop & creator Việt Nam | Watermark + CTA + Hashtag trending VN")
