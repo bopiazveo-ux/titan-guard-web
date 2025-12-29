@@ -75,7 +75,7 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary"):
                     path = files[0]
 
                     # Xử lý video (logic đơn giản nhưng đầy đủ)
-                                        try:
+            try:
                         clip = VideoFileClip(path)
                         has_video = True
                     except Exception as e:
@@ -154,3 +154,4 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary"):
 st.markdown("---")
 
 st.caption("TitanGuard Web PRO 2025 - Tool tạo video viral cho shop & creator Việt Nam | Watermark + CTA + Hashtag trending VN")
+
