@@ -1,7 +1,6 @@
-streamlit
+gradio
 yt-dlp
 moviepy==1.0.3
 imageio-ffmpeg==0.5.1
-numpy
-scipy
+numpy==1.26.4
 Pillow==9.5.0
