@@ -7,10 +7,6 @@ import tempfile
 import random
 from datetime import datetime
 
-# FIX IMAGEMAGICK – DÙNG PYGAME RENDERER
-from moviepy.config import change_settings
-change_settings({"TEXT_RENDERER": "pygame"})
-
 # Thư mục
 TEMP_DIR = tempfile.gettempdir()
 OUTPUT_DIR = "outputs"
@@ -38,6 +34,8 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
                     'outtmpl': outtmpl,
                     'quiet': True,
                     'noplaylist': True,
+                    'impersonate': 'chrome:124',  # Fix cảnh báo impersonate
+                    'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
                 }
 
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -50,12 +48,12 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
                 else:
                     path = files[0]
 
-                    # Fix video_fps
+                    # Load video/audio an toàn (fix video_fps)
                     try:
                         clip = VideoFileClip(path)
                         has_video = True
                     except:
-                        st.warning("File chỉ có audio → tạo nền đen")
+                        st.warning("File chỉ có audio → tạo nền đen + âm thanh")
                         audio_clip = AudioFileClip(path)
                         clip = ColorClip((1080,1920), color=(0,0,0)).set_duration(audio_clip.duration).set_audio(audio_clip)
                         has_video = False
@@ -63,7 +61,7 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
                     duration = clip.duration
                     final_clip = clip.subclip(0, min(15, duration))
 
-                    # Background
+                    # Background blur nếu có video
                     if has_video:
                         bg = final_clip.resize(width=1080*1.5).crop(x_center=final_clip.w//2, width=1080, height=1920).resize(0.1).resize(10)
                         dark = ColorClip((1080,1920), (0,0,0)).set_opacity(0.4).set_duration(final_clip.duration)
@@ -85,25 +83,36 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
                         cta_clip = cta_clip.set_position('center').set_start(final_clip.duration - cta_dur).set_duration(cta_dur).crossfadein(0.5).crossfadeout(0.5)
                         layers.append(cta_clip)
 
-                    # Caption + hashtag
+                    # Caption + Hashtag trending VN
                     if add_caption:
-                        hashtags = " ".join(random.sample(["#Xuhuong", "#TikTokVN", "#FYP", "#Viral", "#GiángSinh2025", "#Noel2025"], 5))
+                        hashtags = " ".join(random.sample([
+                            "#Xuhuong", "#TikTokVN", "#FYP", "#Viral", "#GiángSinh2025", "#Noel2025"
+                        ], 5))
                         caption_text = f"{title[:60]}...\n{hashtags}"
                         txt = TextClip(caption_text, fontsize=45, color='white', font='Arial-Bold')
                         txt = txt.set_position(('center','bottom')).set_duration(final_clip.duration).margin(bottom=120)
                         layers.append(txt)
 
+                    # Tổng hợp và render
                     final = CompositeVideoClip(layers, size=(1080,1920))
-                    output_path = f"{OUTPUT_DIR}/final_{timestamp}.mp4"
+                    output_path = f"{OUTPUT_DIR}/TitanGuard_{timestamp}.mp4"
                     final.write_videofile(output_path, fps=30, codec='libx264', audio_codec='aac', preset='ultrafast', threads=4, logger=None)
 
                     st.success("🎉 HOÀN THÀNH! Video TitanGuard PRO đã sẵn sàng!")
                     st.video(output_path)
+
                     with open(output_path, "rb") as f:
-                        st.download_button("TẢI VIDEO VỀ", f, file_name="TitanGuard_PRO.mp4", use_container_width=True)
+                        st.download_button(
+                            label="📥 TẢI VIDEO VỀ MÁY NGAY",
+                            data=f,
+                            file_name=f"TitanGuard_PRO_{timestamp}.mp4",
+                            mime="video/mp4",
+                            use_container_width=True
+                        )
 
             except Exception as e:
                 st.error(f"Lỗi: {str(e)}")
+                st.info("Gợi ý: Thử URL TikTok khác hoặc kiểm tra kết nối mạng.")
 
 st.markdown("---")
 st.caption("TitanGuard Web PRO 2025 - Tool tạo video viral miễn phí cho shop & creator Việt Nam")
