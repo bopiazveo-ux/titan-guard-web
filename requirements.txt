@@ -1,6 +1,6 @@
 streamlit
 yt-dlp
 moviepy==1.0.3
-imageio-ffmpeg==0.5.1
+imageio-ffmpeg
 numpy
 scipy
