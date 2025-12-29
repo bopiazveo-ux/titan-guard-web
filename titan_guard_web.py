@@ -8,7 +8,7 @@ from datetime import datetime
 import random
 import tempfile
 
-# FIX IMAGEMAGICK: Dùng Pygame renderer thay thế
+# Buộc dùng Pygame renderer để tránh lỗi ImageMagick/ffmpeg
 from moviepy.config import change_settings
 change_settings({"TEXT_RENDERER": "pygame"})
 
@@ -31,7 +31,7 @@ st.set_page_config(page_title="TitanGuard PRO 2025", page_icon="🛡️", layout
 
 st.title("🛡️ TitanGuard PRO 2025")
 st.markdown("### Tạo video dọc TikTok/Reels/Shorts siêu viral chỉ trong 1 click!")
-st.markdown("Nhập URL TikTok → Chọn tùy chọn → Pick video pro có watermark, CTA, hashtag trending VN 🎅✨")
+st.markdown("Nhập URL TikTok → Chọn tùy chọn → Tải video pro có watermark, CTA, hashtag trending VN 🎅✨")
 
 video_url = st.text_input("🔗 Nhập URL TikTok hoặc YouTube Shorts:", placeholder="https://www.tiktok.com/@user/video/123456789")
 
