@@ -147,10 +147,8 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
                     output_path = f"{OUTPUT_DIR}/TitanGuard_{timestamp}.mp4"
                     final.write_videofile(output_path, fps=30, codec='libx264', audio_codec='aac',
                                           preset='ultrafast', threads=4, logger=None)
-
                     st.success("🎉 HOÀN THÀNH! Video TitanGuard PRO đã sẵn sàng!")
                     st.video(output_path)
-
                     with open(output_path, "rb") as f:
                         st.download_button(
                             label="📥 TẢI VIDEO VỀ MÁY NGAY",
@@ -159,7 +157,6 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
                             mime="video/mp4",
                             use_container_width=True
                         )
-
             except Exception as e:
                 st.error(f"Đã có lỗi: {str(e)}")
                 st.info("Gợi ý: Thử URL TikTok khác hoặc kiểm tra kết nối mạng.")
