@@ -8,7 +8,7 @@ from datetime import datetime
 import random
 import tempfile
 
-# Tự động tải ffmpeg binary cho moviepy
+# Tự động tải ffmpeg binary cho moviepy (rất quan trọng trên Streamlit Cloud)
 import imageio
 imageio.plugins.ffmpeg.download()
 
@@ -84,7 +84,7 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
                         clip = VideoFileClip(path)
                         has_video = True
                         st.info("✅ Có video thật → hiệu ứng blur đẹp")
-                    except:
+                    except Exception:
                         st.warning("⚠️ Chỉ có audio → tạo nền đen + âm thanh")
                         audio_clip = AudioFileClip(path)
                         clip = ColorClip((1080,1920), color=(0,0,0)).set_duration(audio_clip.duration).set_audio(audio_clip)
@@ -122,4 +122,25 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
 
                         cta = TextClip(cta_text, fontsize=70, color='yellow', font='Arial-Bold',
                                        stroke_color='black', stroke_width=5)
-                        cta = cta.set_position('center').set_start(start_time).set_duration(ct
+                        cta = cta.set_position('center').set_start(start_time).set_duration(cta_dur)
+                        if cta_zoom:
+                            cta = cta.resize(lambda t: 1 + 0.2 * min(t/1.5, 1))
+                        cta = cta.crossfadein(0.5).crossfadeout(0.5)
+                        layers.append(cta)
+
+                        if cta_icon:
+                            icon = TextClip(cta_icon, fontsize=120, color='red')
+                            icon = icon.set_position('center').set_start(start_time).set_duration(cta_dur)
+                            icon = icon.set_opacity(lambda t: 0.8 + 0.2 * abs(np.sin(6*t)))
+                            layers.append(icon)
+
+                    # Caption + Hashtag trending VN
+                    if add_caption:
+                        base = generate_caption(title)
+                        hashtags = " ".join(random.sample([
+                            "#Xuhuong", "#TikTokVN", "#FYP", "#Viral", "#ForYou",
+                            "#GiángSinh2025", "#Noel2025", "#HappyNewYear2026",
+                            "#NămMới2026", "#MerryChristmas", "#Review", "#CapCut"
+                        ], 6))
+                        caption_text = f"{base}\n{hashtags}"
+                        txt = TextClip(caption_text, fontsize=45, color='white', font
