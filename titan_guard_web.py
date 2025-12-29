@@ -7,7 +7,8 @@ import numpy as np
 from datetime import datetime
 import random
 import tempfile
-
+from moviepy.config import change_settings
+change_settings({"IMAGEMAGICK_BINARY": None, "TEXT_RENDERER": "pygame"})
 # Thư mục tạm và output
 TEMP_DIR = tempfile.gettempdir()
 OUTPUT_DIR = "outputs"
@@ -159,3 +160,4 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
 
 st.markdown("---")
 st.caption("TitanGuard Web PRO 2025 - Tool tạo video viral miễn phí cho shop & creator Việt Nam | Watermark + CTA + Hashtag trending VN")
+
