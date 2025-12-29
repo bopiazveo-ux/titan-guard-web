@@ -8,10 +8,6 @@ from datetime import datetime
 import random
 import tempfile
 
-# Buộc dùng Pygame renderer để tránh lỗi ImageMagick/ffmpeg
-from moviepy.config import change_settings
-change_settings({"TEXT_RENDERER": "pygame"})
-
 # Thư mục tạm và output
 TEMP_DIR = tempfile.gettempdir()
 OUTPUT_DIR = "outputs"
@@ -27,7 +23,7 @@ def generate_caption(text):
     return clean_text + " 🔥"
 
 # Giao diện web
-st.set_page_config(page_title="TitanGuard PRO 2025", page_icon="🛡️", layout="centered")
+st.set_page_config(page_title="TitanGuard PRO", page_icon="🛡️", layout="centered")
 
 st.title("🛡️ TitanGuard PRO 2025")
 st.markdown("### Tạo video dọc TikTok/Reels/Shorts siêu viral chỉ trong 1 click!")
@@ -45,8 +41,6 @@ with col1:
     add_cta = st.checkbox("Thêm CTA lớn (Follow/Shop)", value=True)
     cta_text = st.text_input("Nội dung CTA:", value="Follow ngay để nhận deal hot! 🔥")
     cta_position = st.selectbox("Vị trí CTA:", ["end", "middle", "start"], index=0)
-    cta_zoom = st.checkbox("Hiệu ứng zoom nhẹ vào CTA", value=True)
-    cta_icon = st.text_input("Icon động cho CTA:", value="🔥")
 
 with col2:
     st.subheader("✂️ Tối ưu video")
@@ -104,29 +98,19 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
 
                     # Watermark
                     if add_watermark:
-                        wm = TextClip(watermark_text, fontsize=36, color='white', font='Arial-Bold',
-                                      stroke_color='black', stroke_width=2)
+                        wm = TextClip(watermark_text, fontsize=36, color='white', font='Arial-Bold')
                         wm = wm.set_position(('right','bottom')).set_duration(final_clip.duration)
                         wm = wm.margin(right=20, bottom=40, opacity=0).set_opacity(0.8)
                         layers.append(wm)
 
-                    # CTA nâng cao
+                    # CTA đơn giản (không zoom/icon phức tạp để tránh lỗi)
                     if add_cta:
                         cta_dur = min(5, final_clip.duration)
                         start_time = final_clip.duration - cta_dur if cta_position == "end" else (final_clip.duration/2 - cta_dur/2) if cta_position == "middle" else 0
-                        cta = TextClip(cta_text, fontsize=70, color='yellow', font='Arial-Bold',
-                                       stroke_color='black', stroke_width=5)
+                        cta = TextClip(cta_text, fontsize=70, color='yellow', font='Arial-Bold')
                         cta = cta.set_position('center').set_start(start_time).set_duration(cta_dur)
-                        if cta_zoom:
-                            cta = cta.resize(lambda t: 1 + 0.2 * min(t/1.5, 1))
                         cta = cta.crossfadein(0.5).crossfadeout(0.5)
                         layers.append(cta)
-
-                        if cta_icon:
-                            icon = TextClip(cta_icon, fontsize=120, color='red')
-                            icon = icon.set_position('center').set_start(start_time).set_duration(cta_dur)
-                            icon = icon.set_opacity(lambda t: 0.8 + 0.2 * abs(np.sin(6*t)))
-                            layers.append(icon)
 
                     # Caption + Hashtag trending VN
                     if add_caption:
@@ -137,8 +121,7 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
                             "#NămMới2026", "#MerryChristmas", "#Review", "#CapCut"
                         ], 6))
                         caption_text = f"{base}\n{hashtags}"
-                        txt = TextClip(caption_text, fontsize=45, color='white', font='Arial-Bold',
-                                       stroke_color='black', stroke_width=3)
+                        txt = TextClip(caption_text, fontsize=45, color='white', font='Arial-Bold')
                         txt = txt.set_position(('center','bottom')).set_duration(final_clip.duration).margin(bottom=120)
                         layers.append(txt)
 
