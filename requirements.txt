@@ -1,2 +1,8 @@
 streamlit
 yt-dlp
+moviepy==1.0.3
+imageio-ffmpeg==0.5.1
+numpy
+scipy
+Pillow==9.5.0
+pygame
