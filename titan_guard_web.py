@@ -9,8 +9,7 @@ import random
 import tempfile
 
 # Tự động tải ffmpeg binary cho moviepy
-import imageio
-imageio.plugins.ffmpeg.download()
+
 
 # Thư mục tạm và output
 TEMP_DIR = tempfile.gettempdir()
@@ -163,3 +162,4 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
 
 st.markdown("---")
 st.caption("TitanGuard Web PRO 2025 - Tool tạo video viral miễn phí cho shop & creator Việt Nam | Watermark + CTA + Hashtag trending VN")
+
