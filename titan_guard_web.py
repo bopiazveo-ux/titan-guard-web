@@ -5,6 +5,8 @@ import glob
 import os
 import tempfile
 import random
+from moviepy.config import change_settings
+change_settings({"TEXT_RENDERER": "pygame"})
 from datetime import datetime
 
 # Thư mục
@@ -105,3 +107,4 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
 
 st.markdown("---")
 st.caption("TitanGuard Web PRO 2025 - Tool tạo video viral miễn phí cho shop & creator Việt Nam")
+
