@@ -8,7 +8,7 @@ from datetime import datetime
 import random
 import tempfile
 
-# Tự động tải ffmpeg binary cho moviepy (rất quan trọng trên Streamlit Cloud)
+# Tự động tải ffmpeg binary cho moviepy
 import imageio
 imageio.plugins.ffmpeg.download()
 
@@ -31,7 +31,7 @@ st.set_page_config(page_title="TitanGuard PRO 2025", page_icon="🛡️", layout
 
 st.title("🛡️ TitanGuard PRO 2025")
 st.markdown("### Tạo video dọc TikTok/Reels/Shorts siêu viral chỉ trong 1 click!")
-st.markdown("Nhập URL TikTok → Chọn tùy chọn → Tải video pro có watermark, CTA, hashtag trending VN 🎅✨")
+st.markdown("Nhập URL TikTok → Chọn tùy chọn → Pick video pro có watermark, CTA, hashtag trending VN 🎅✨")
 
 video_url = st.text_input("🔗 Nhập URL TikTok hoặc YouTube Shorts:", placeholder="https://www.tiktok.com/@user/video/123456789")
 
@@ -84,8 +84,8 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
                         clip = VideoFileClip(path)
                         has_video = True
                         st.info("✅ Có video thật → hiệu ứng blur đẹp")
-                    except Exception:
-                        st.warning("⚠️ Chỉ có audio → tạo nền đen + âm thanh")
+                    except:
+                        st.warning("Video stream lỗi → dùng audio-only với nền đen")
                         audio_clip = AudioFileClip(path)
                         clip = ColorClip((1080,1920), color=(0,0,0)).set_duration(audio_clip.duration).set_audio(audio_clip)
                         has_video = False
@@ -113,13 +113,7 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
                     # CTA nâng cao
                     if add_cta:
                         cta_dur = min(5, final_clip.duration)
-                        if cta_position == "end":
-                            start_time = final_clip.duration - cta_dur
-                        elif cta_position == "middle":
-                            start_time = final_clip.duration/2 - cta_dur/2
-                        else:
-                            start_time = 0
-
+                        start_time = final_clip.duration - cta_dur if cta_position == "end" else (final_clip.duration/2 - cta_dur/2) if cta_position == "middle" else 0
                         cta = TextClip(cta_text, fontsize=70, color='yellow', font='Arial-Bold',
                                        stroke_color='black', stroke_width=5)
                         cta = cta.set_position('center').set_start(start_time).set_duration(cta_dur)
@@ -143,4 +137,32 @@ if st.button("🚀 TẠO VIDEO PRO NGAY!", type="primary", use_container_width=T
                             "#NămMới2026", "#MerryChristmas", "#Review", "#CapCut"
                         ], 6))
                         caption_text = f"{base}\n{hashtags}"
-                        txt = TextClip(caption_text, fontsize=45, color='white', font
+                        txt = TextClip(caption_text, fontsize=45, color='white', font='Arial-Bold',
+                                       stroke_color='black', stroke_width=3)
+                        txt = txt.set_position(('center','bottom')).set_duration(final_clip.duration).margin(bottom=120)
+                        layers.append(txt)
+
+                    # Tổng hợp và render
+                    final = CompositeVideoClip(layers, size=(1080,1920))
+                    output_path = f"{OUTPUT_DIR}/TitanGuard_{timestamp}.mp4"
+                    final.write_videofile(output_path, fps=30, codec='libx264', audio_codec='aac',
+                                          preset='ultrafast', threads=4, logger=None)
+
+                    st.success("🎉 HOÀN THÀNH! Video TitanGuard PRO đã sẵn sàng!")
+                    st.video(output_path)
+
+                    with open(output_path, "rb") as f:
+                        st.download_button(
+                            label="📥 TẢI VIDEO VỀ MÁY NGAY",
+                            data=f,
+                            file_name=f"TitanGuard_PRO_{timestamp}.mp4",
+                            mime="video/mp4",
+                            use_container_width=True
+                        )
+
+            except Exception as e:
+                st.error(f"Đã có lỗi: {str(e)}")
+                st.info("Gợi ý: Thử URL TikTok khác hoặc kiểm tra kết nối mạng.")
+
+st.markdown("---")
+st.caption("TitanGuard Web PRO 2025 - Tool tạo video viral miễn phí cho shop & creator Việt Nam | Watermark + CTA + Hashtag trending VN")
